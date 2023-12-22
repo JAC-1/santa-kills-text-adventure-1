@@ -1,3 +1,7 @@
+import random
+import sys
+
+
 """
 A christmas text adventure game made for the English language support center.
 """
@@ -70,7 +74,7 @@ BACKGROUND = [
 
 LOCATIONS = {
     # The locations of your head / body
-    "beginning": "You open your eyes. Your head is pounding. You realize you are lieing on the floor.",
+    "beginning": "You open your eyes. Your head is pounding. You realize you are lying on the floor.",
     "brother": "You remember your brother stole his best friend's Nintendo Switch this year, to play Super Mario Wonder",
     "floor": "You see a pool of dark liquid. The room is almost pitch black, but the christmas tree's lights behind you makes a bit of light.",
     "room": "The room is dark. There are carefully wrapped presents under the christmas tree. Next to the tree is a table with a glass of milk and a plate of cookies."
@@ -83,20 +87,22 @@ ACTIONS = {
     "eat-cookies": "You eat the cookies. The sugary goodness tickles your tongue. Your hands begin to steady",
     "stand": "You stand up. Your head is spinning.",
     "recall": "You try to remember the meaning for ",
+    "shoot": "You aim and shoot your gun at the man in red.",
+    "load": "You load the gun.",
     "forgot": "You can't remember the meaning for ",
 }
 
 SANTA = [
     "You hear footsteps above you. Someone is upstares wearing heavy boots.",
-    "The footsteps above you are getting louder",
-    "You hear a door opening on the second floor",
-    "You hear footsteps near the top of the stairs",
-    "You hear lound footsteps taking a step down the stairs",
-    "You hear another loud footstep as someone is coming down the stairs" ,
-    "You hear another loud step. You see two large black boot at the top of the stairs",
+    "The footsteps above you are getting louder.",
+    "You hear a door opening on the second floor.",
+    "You hear footsteps near the top of the stairs.",
+    "You hear lound footsteps taking a step down the stairs.",
+    "You hear another loud footstep as someone is coming down the stairs." ,
+    "You hear another loud step. You see two large black boot at the top of the stairs.",
     "You hear another loud step. You see two large boot and red pants.",
-    "You hear another loud step. You see two large boot, red pants, and a black belt",
-    "You hear a few more loud steps. You see two large boot, red pants, a black belt, and a red jacket",
+    "You hear another loud step. You see two large boot, red pants, and a black belt.",
+    "You hear a few more loud steps. You see two large boot, red pants, a black belt, and a red jacket.",
     "You hear the foot steps behind you."
 ]
  
@@ -110,6 +116,7 @@ WORD_DEFINITIONS = {
     "pitch-black": "(ex) very very dark. You can't see anything.",
     "spinning": "(v) going around and around; dizzy",
     "steady": "(v) moving less; to make something move less; to hold something still",
+    "footstep": "(n) the sound when someone is walking",
     "footsteps": "(n) the sound when someone is walking",
     "vision": "(n) your ability to see with your eyes",
     "stairs": "(n) something you walk up or down to get to another floor",
@@ -121,6 +128,8 @@ WORD_DEFINITIONS = {
     "handgun": "(n) a small gun you can use with one hand.",
     "soulless": "(adj) no soul and no emotions.",
     "massager": "(n) a device used to relax muscles...",
+    "step": "(n/v) one level of a staircase; move your foot forward once",
+    "bit": "(n) a very small amount of something.",
 }
 
 PRESENTS = {
@@ -128,22 +137,35 @@ PRESENTS = {
     "hair_dryer": "It's a hairdryer. It's pink and wireless. Amazing technology, but not very useful right now.",
     "toothbrush": "It's a toothbrush. It's soft bristles are not very useful right now.",
     "gun": "It's a Beretta 3032 Tomcat handgun. It's small, but looks useful.",
-    "bullets": "It's bullets. They glimmer in the dim light, lifeless.",
+    "bullets": "It's full of bullets. They glimmer in the dim light, lifeless.",
     "coffee_maker": "It's a coffee maker. My father would love this, but he's sleeping right now?",
     "dog_toy": "It's a dog toy... but we don't have a dog",
     "massager": "It's a massager. The batteries are dead, but I'm sure it's very relaxing."
 }
 
 STATE = {
-    "lying": False,
+    "lying": True,
     "standing": False,
 }
 
+gun_state = {
+    "have": False,
+    "loaded": False
+}
 
-inventory = []
+santa_state = {
+    "alive": True,
+}
 
+inventory = {}
 santa_counter = 0
+nervousness = 0
 
+def ask_to_play_again():
+    answer = ""
+    while answer != "yes" or answer != "no":
+        answer = input("Would you like to play again?\nYes or No\n").lower()
+    return answer
 
 def remember(word):
     if word in WORD_DEFINITIONS.keys():
@@ -157,6 +179,75 @@ def introduce():
         print(i)
 
 
+def open_and_add(command):
+    # TODO: Refactor me please
+    item = command[1].lower()
+    open_message = ACTIONS["open"][item]
+    if item == "inventory":
+        print(open_message)
+        print("------------------")
+        for key, val in inventory.items():
+            print(f"> {key}")
+        print("------------------")
+        print("\n")
+    elif item == "present":
+        random_present_name = random.choice(list(PRESENTS.keys()))
+        random_present_message = PRESENTS[random_present_name]
+        print("\n")
+        print(open_message)
+        print(random_present_message)
+        match random_present_name:
+            case "teddy_bear":
+                print("\nYou put the teddy bear in your inventory.\n")
+                inventory[random_present_name] = random_present_message
+                del PRESENTS[random_present_name]
+                return
+            case "hair_dryer":
+                print("\nYou put the hair dryer in your inventory.\n")
+                inventory[random_present_name] = random_present_message
+                del PRESENTS[random_present_name]
+                return
+            case "dog_toy":
+                print("\nYou put the dog toy in your inventory.\n")
+                inventory[random_present_name] = random_present_message
+                del PRESENTS[random_present_name]
+                return
+            case "coffee_maker":
+                print("\nYou put the coffee maker in your inventory.\n")
+                inventory[random_present_name] = random_present_message
+                del PRESENTS[random_present_name]
+                return
+            case "gun":
+                print(f"\nYou put the {random_present_name} in your inventory.\n")
+                inventory[random_present_name] = random_present_message
+                gun_state["have"] = True
+                del PRESENTS[random_present_name]
+                return
+
+        print(f"\nYou put the {random_present_name} in your inventory.\n")
+        inventory[random_present_name] = random_present_message
+        del PRESENTS[random_present_name]
+        
+
+def load_gun():
+    if gun_state["have"]:
+        if "bullets" in inventory.keys():
+            print(ACTIONS["load"])
+            gun_state["loaded"] = True
+        else:
+            print("You don't have any bullets")
+    else:
+        print("You don't have a gun")
+    
+
+def shoot_gun():
+    if gun_state["loaded"]:
+        print(ACTIONS["shoot"])
+        santa_state["alive"] = False
+    else: 
+        print("Shoot with what?")
+
+
 while True:
     print(SANTA_IMAGE)
     print(TITLE)
@@ -164,20 +255,72 @@ while True:
     _ = input()  # Pause before start of game
     print(LOCATIONS["beginning"], LOCATIONS["brother"])
     while True:
-        command = input()
-        match command:
-            case look:
-                print(ACTIONS["look"])
-                if STATE["lying"]:
-                    print(LOCATIONS["floor"])
-                elif STATE["room"]:
-                    print(LOCATIONS["room"])
-            case _:
-                print("You do nothing")
+        player_command = input().strip().split()
+        print("\n")
+        try:
+            match player_command[0]:
+                case "look":
+                    print(ACTIONS["look"])
+                    if STATE["lying"]:
+                        print("You are lying on the floor")
+                        print(LOCATIONS["floor"])
+                    elif STATE["standing"]:
+                        print(LOCATIONS["room"])
+                case "open":
+                    open_and_add(player_command)
+                case "drink":
+                    print(ACTIONS["drink-milk"])
+                case "eat":
+                    print(ACTIONS["eat-cookies"])
+                case "stand":
+                    print(ACTIONS["stand"])
+                    STATE["lying"] = False
+                    STATE["standing"] = True
+                case "recall":
+                    remember(player_command[1])
+                case "help":
+                    possible_actions_list = list(ACTIONS.keys())
+                    possible_actions_list.pop()
+                    print("\n")
+                    for i in possible_actions_list:
+                        if i == "open":
+                            print("open present")
+                            print("open inventory")
+                            continue
+                        elif i == "drink-milk":
+                            print("drink")
+                            continue
+                        elif i == "eat-cookies":
+                            print("eat")
+                            continue
+                        print(i)
+                    print("\n")
+                    continue
+                case "load":
+                    load_gun()
+                case "shoot":
+                    shoot_gun()
+                case _:
+                    print("\n")
+                    print("You do nothing.")
+        except:
+            print("You do nothing")
+            print("(Type 'help' for commands.)")
 
         santa_counter += 1
 
+        if santa_state["alive"] is False:
+            print(SANTA_DEAD)
+        elif santa_counter == len(SANTA):
+            print(SANTA_KILLS)
+            break
+        else:
+            print(SANTA[santa_counter])
+            continue
+        break
+    break
 
 
-    word = input()
-    remember(word)
+
+
+
