@@ -1,147 +1,11 @@
 import random
-import sys
+import text
 
 
 """
 A christmas text adventure game made for the English language support center.
 """
 
-SANTA_IMAGE = """
-                               ..,,,,,,,,,,,,,,,,.. 
-                        ..,,;;;;;;;;;;;;;;;;;;;;;;;;;;,,. 
-                    .,::::;;;;aaaaaaaaaaaaaaaaaaaaaaaaaaa;;,,. 
-                .,;;,:::a@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@a, 
-              ,;;;;.,a@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@a 
-           ,;;;;%;.,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@a, 
-        ,;%;;;;%%;,@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-     ,;;%%;;;;;%%;;@@@@@@@@@@@@@@'%v%v%v%v%v%v%v%v%v%v%v%v`@@@@@@@@@ 
-   ,;;%%;;;;:;;;%;;@@@@@@@@@'%vvvvvvvvvnnnnnnnnnnnnnnnnvvvvvv%`@@@@' 
-  ,;%%;;;;;:;;;;;;;;@@@@@'%vvva@@@@@@@@avvnnnnnnnnnnvva@@@@@@@OOov, 
- ,;%;;;;;;:::;;;;;;;@@'OO%vva@@@@@@@@@@@@vvnnnnnnnnvv@@@@@@@@@@@Oov 
- ;%;;;;;;;:::;;;;;;;;'oO%vvn@@%nvvvvvvvv%nnnnnnnnnnnnn%vvvvvvnn%@Ov 
- ;;;;;;;;;:::;;;;;;::;oO%vvnnnn>>nn.   `nnnnnnnnnnnn>>nn.   `nnnvv' 
- ;;;;;;;;;:::;;;;;;::;oO%vvnnvvmmmmmmmmmmvvvnnnnnn;%mmmmmmmmmmmmvv, 
- ;;;;;;;;;:::;;;;;;::;oO%vvmmmmmmmmmmmmmmmmmvvnnnv;%mmmmmmmmmmmmmmmv, 
- ;;;;;;;;;;:;;;;;;::;;oO%vmmmmnnnnnnnnnnnnmmvvnnnvmm;%vvnnnnnnnnnmmmv 
-  `;%;;;;;;;:;;;;::;;o@@%vvmmnnnnnnnnnnnvnnnnnnnnnnmmm;%vvvnnnnnnmmmv 
-   `;;%%;;;;;:;;;::;.oO@@%vmmnnnnnnnnnvv%;nnnnnnnnnmmm;%vvvnnnnnnmmv' 
-     `;;;%%;;;:;;;::;.o@@%vvnnnnnnnnnnnvv%;nnnnnnnmm;%vvvnnnnnnnv%'@a. 
-      a`;;;%%;;:;;;::;.o@@%vvvvvvvvvvvvvaa@@@@@@@@@@@@aa%%vvvvv%%@@@@o. 
-     .@@o`;;;%;;;;;;::;,o@@@%vvvvvvva@@@@@@@@@@@@@@@@@@@@@avvvva@@@@@%O, 
-    .@@@@@Oo`;;;;;;;;::;o@@@@@@@@@@@@@@@@@@@@"""""""@@@@@@@@@@@@@@@@@OO@a 
-  .@@@@@@@@@OOo`;;;;;;:;o@@@@@@@@@@@@@@@@"           "@@@@@@@@@@@@@@oOO@@@, 
- .@@@@o@@@@@@@OOo`;;;;:;o,@@@@@@@@@@%vvvvvvvvvvvvvvvvvv%%@@@@@@@@@oOOO@@@@@, 
- @@@@o@@@@@@@@@OOo;::;'oOOooooooooOOOo%vvvvvvvvvvvvvv%oOOooooooooOOO@@@O@@@, 
- @@@oO@@@@@@@@@OOa@@@@@a,oOOOOOOOOOOOOOOoooooooooooooOOOOOOOOOOOOOO@@@@Oo@@@ 
- @@@oO@@@@@@@OOa@@@@@@@@Oo,oO@@@@@@@@@@OOOOOOOOOOOOOO@@@@@@@@@@@@@@@@@@Oo@@@ 
- @@@oO@@@@@@OO@@@@@@@@@@@OO,oO@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@Oo@@@ 
- @@@@o@@@@@@OO@@@@@@@@@@OOO,oO@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@o@@@@@@@@@O@@@@ 
- @@@@@o@@@@@OOo@@@@@@@OOOO'oOO@@@@@@@@Oo@@@@@@@@@@@@O@@@@@@@@Oo@@@@@@@@@@@@a 
-`@@@@@@@O@@@OOOo`OOOOOOO'oOO@@@@@@@@@O@@@@@@@@@@@@@@@O@@@@@@@@Oo@@@@@@@@@@@@ 
- `@@@@@OO@@@@@OOOooooooooOO@@@@@@@@@@@@@@@@@@@@@@@@@@Oo@@@@@@@Oo@@@@@@oO@@@@ 
-   `@@@OO@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@@@@@@@@@@Oo@@@@@@@O@@@@@@@oO@@@' 
-      `@@`O@@@@@@@@@@@@@@@@@@@Oo@@@@@@@@@@@@@@@@@@@@@@Oo@@@@@@@@@@@@@@@O@@@' 
-        `@ @@@@@@@@@@@@@@@@@@@OOo@@@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@'@@' 
-           `@@@@@@@@@@@@@@@@@@OOo@@@@@@@@@@@@@@@@@@@@O@@@@@@@@@@@@@@@ a' 
-               `@@@@@@@@@@@@@@OOo@@@@@@@@@@@@@@@@@@@@@@@@Oo@@@@@@@@' 
-                  `@@@@@@@@@@@Oo@@@@@@@@@@@@@@@@@@@@@@@@@Oo@@@@' 
-                      `@@@@@@Oo@@@@O@@@@@@@@@@@@@@@@@@@'o@@' 
-                          `@@@@@@@@oO@@@@@@@@@@@@@@@@@ a' 
-                              `@@@@@oO@@@@@@@@@@@@@@' ' 
-                                '@@@o'`@@@@@@@@' 
-                                 @'   .@@@@' 
-                                     @@' 
-                                   @'
-"""
-
-TITLE = """
-|\ |  _.      _  |_ _|_       |  o  _ _|_
-| \| (_| |_| (_| | | |_ \/    |_ | _>  |_
-              _|        /
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-"""
-
-BACKGROUND = [
-    "Because of SDGs and inflation, coal is very expensive.",
-    "So expensive, infact, Santa can no longer give coal to naughty childern.",
-    "Santa has gone crazy from having to deliver to 2 billion childern every year",
-    "All naughty childern are now on his 'Kill List'."
-    "--------------------------------------------",
-    "--------------------------------------------",
-    "(press enter to continue)"
-]
-
-LOCATIONS = {
-    # The locations of your head / body
-    "beginning": "You open your eyes. Your head is pounding. You realize you are lying on the floor.",
-    "brother": "You remember your brother stole his best friend's Nintendo Switch this year, to play Super Mario Wonder",
-    "floor": "You see a pool of dark liquid. The room is almost pitch black, but the christmas tree's lights behind you makes a bit of light.",
-    "room": "The room is dark. There are carefully wrapped presents under the christmas tree. Next to the tree is a table with a glass of milk and a plate of cookies."
-}
-
-ACTIONS = {
-    "look": "You take a look around",
-    "open": {"inventory": "You open your inventory", "present": "You open a present."},
-    "drink-milk": "You drink the milk. The sweet comforting liquid fills your mouth. Your hands begin to steady.",
-    "eat-cookies": "You eat the cookies. The sugary goodness tickles your tongue. Your hands begin to steady",
-    "stand": "You stand up. Your head is spinning.",
-    "recall": "You try to remember the meaning for ",
-    "shoot": "You aim and shoot your gun at the man in red.",
-    "load": "You load the gun.",
-    "forgot": "You can't remember the meaning for ",
-}
-
-SANTA = [
-    "You hear footsteps above you. Someone is upstares wearing heavy boots.",
-    "The footsteps above you are getting louder.",
-    "You hear a door opening on the second floor.",
-    "You hear footsteps near the top of the stairs.",
-    "You hear lound footsteps taking a step down the stairs.",
-    "You hear another loud footstep as someone is coming down the stairs." ,
-    "You hear another loud step. You see two large black boot at the top of the stairs.",
-    "You hear another loud step. You see two large boot and red pants.",
-    "You hear another loud step. You see two large boot, red pants, and a black belt.",
-    "You hear a few more loud steps. You see two large boot, red pants, a black belt, and a red jacket.",
-    "You hear the foot steps behind you."
-]
- 
-SANTA_DEAD = "You've killed Santa... but where is your brother?"
-SANTA_KILLS = "You fall to the floor. The loud footsteps get quieter and quieter, as your vision goes black."
-
-WORD_DEFINITIONS = {
-    "pounding": "(v) an 'on'/'off' sound or pain. Think of a someone making something with a hammer.",
-    "realize": "(v) to become aware. For example, people are laughing at you and you don't know why. You realize you are not wearing pants!",
-    "comforting": "(adj) make you feel calmer and less worried",
-    "pitch-black": "(ex) very very dark. You can't see anything.",
-    "spinning": "(v) going around and around; dizzy",
-    "steady": "(v) moving less; to make something move less; to hold something still",
-    "footstep": "(n) the sound when someone is walking",
-    "footsteps": "(n) the sound when someone is walking",
-    "vision": "(n) your ability to see with your eyes",
-    "stairs": "(n) something you walk up or down to get to another floor",
-    "tickles": "(v) a sometimes good, sometimes bad feeling when something touches you. Think of a feather under your nose.",
-    "feather": "(n) a very light part of a bird's wing",
-    "glimmer": "(v) reflect light in a pleasant way; shinny.",
-    "useful": "(adj) something that you can use for some kind of benifit.",
-    "lifeless": "(adj) another word for dead.",
-    "handgun": "(n) a small gun you can use with one hand.",
-    "soulless": "(adj) no soul and no emotions.",
-    "massager": "(n) a device used to relax muscles...",
-    "step": "(n/v) one level of a staircase; move your foot forward once",
-    "bit": "(n) a very small amount of something.",
-}
-
-PRESENTS = {
-    "teddy_bear": "It's a teddy bear. You feel it's fluffy fur, as it stares back at you with soulless eyes",
-    "hair_dryer": "It's a hairdryer. It's pink and wireless. Amazing technology, but not very useful right now.",
-    "toothbrush": "It's a toothbrush. It's soft bristles are not very useful right now.",
-    "gun": "It's a Beretta 3032 Tomcat handgun. It's small, but looks useful.",
-    "bullets": "It's full of bullets. They glimmer in the dim light, lifeless.",
-    "coffee_maker": "It's a coffee maker. My father would love this, but he's sleeping right now?",
-    "dog_toy": "It's a dog toy... but we don't have a dog",
-    "massager": "It's a massager. The batteries are dead, but I'm sure it's very relaxing."
-}
 
 STATE = {
     "lying": True,
@@ -161,28 +25,33 @@ inventory = {}
 santa_counter = 0
 nervousness = 0
 
+
 def ask_to_play_again():
-    answer = ""
-    while answer != "yes" or answer != "no":
-        answer = input("Would you like to play again?\nYes or No\n").lower()
-    return answer
+    while True:
+        play_again = input("Do you want to play again? (yes/no): ")
+        if play_again.lower() in ['yes', 'no']:
+            return play_again.lower() == 'yes'
+        print("Please enter 'yes' or 'no'.")
+
 
 def remember(word):
-    if word in WORD_DEFINITIONS.keys():
-        print(ACTIONS["recall"] + f"'{word}'" + "... " + WORD_DEFINITIONS[word])
+    if word in text.WORD_DEFINITIONS.keys():
+        print(text.ACTIONS["remember"] + f"'{word}'" + "... " + text.WORD_DEFINITIONS[word])
     else:
-        print(ACTIONS["forgot"] + f"'{word}'.")
+        print(text.ACTIONS["forgot"] + f"'{word}'.")
 
 
 def introduce():
-    for i in BACKGROUND:
+    for i in text.BACKGROUND:
         print(i)
 
+def open_present():
+    pass
 
 def open_and_add(command):
     # TODO: Refactor me please
     item = command[1].lower()
-    open_message = ACTIONS["open"][item]
+    open_message = text.ACTIONS["open"][item]
     if item == "inventory":
         print(open_message)
         print("------------------")
@@ -191,8 +60,8 @@ def open_and_add(command):
         print("------------------")
         print("\n")
     elif item == "present":
-        random_present_name = random.choice(list(PRESENTS.keys()))
-        random_present_message = PRESENTS[random_present_name]
+        random_present_name = random.choice(list(text.PRESENTS.keys()))
+        random_present_message = text.PRESENTS[random_present_name]
         print("\n")
         print(open_message)
         print(random_present_message)
@@ -200,39 +69,39 @@ def open_and_add(command):
             case "teddy_bear":
                 print("\nYou put the teddy bear in your inventory.\n")
                 inventory[random_present_name] = random_present_message
-                del PRESENTS[random_present_name]
+                del text.PRESENTS[random_present_name]
                 return
             case "hair_dryer":
                 print("\nYou put the hair dryer in your inventory.\n")
                 inventory[random_present_name] = random_present_message
-                del PRESENTS[random_present_name]
+                del text.PRESENTS[random_present_name]
                 return
             case "dog_toy":
                 print("\nYou put the dog toy in your inventory.\n")
                 inventory[random_present_name] = random_present_message
-                del PRESENTS[random_present_name]
+                del text.PRESENTS[random_present_name]
                 return
             case "coffee_maker":
                 print("\nYou put the coffee maker in your inventory.\n")
                 inventory[random_present_name] = random_present_message
-                del PRESENTS[random_present_name]
+                del text.PRESENTS[random_present_name]
                 return
             case "gun":
                 print(f"\nYou put the {random_present_name} in your inventory.\n")
                 inventory[random_present_name] = random_present_message
                 gun_state["have"] = True
-                del PRESENTS[random_present_name]
+                del text.PRESENTS[random_present_name]
                 return
 
         print(f"\nYou put the {random_present_name} in your inventory.\n")
         inventory[random_present_name] = random_present_message
-        del PRESENTS[random_present_name]
+        del text.PRESENTS[random_present_name]
         
 
 def load_gun():
     if gun_state["have"]:
         if "bullets" in inventory.keys():
-            print(ACTIONS["load"])
+            print(text.ACTIONS["load"])
             gun_state["loaded"] = True
         else:
             print("You don't have any bullets")
@@ -242,44 +111,47 @@ def load_gun():
 
 def shoot_gun():
     if gun_state["loaded"]:
-        print(ACTIONS["shoot"])
+        print(text.ACTIONS["shoot"])
         santa_state["alive"] = False
-    else: 
-        print("Shoot with what?")
+    elif gun_state["have"] and gun_state["loaded"] is False:
+        print("You can't shoot an empty gun")
+    else:
+        print("You don't have a gun, or something to shoot with.")
 
 
 while True:
-    print(SANTA_IMAGE)
-    print(TITLE)
+    print(text.SANTA_IMAGE)
+    print(text.TITLE)
     introduce()
     _ = input()  # Pause before start of game
-    print(LOCATIONS["beginning"], LOCATIONS["brother"])
+    print(text.LOCATIONS["beginning"], text.LOCATIONS["brother"])
     while True:
         player_command = input().strip().split()
         print("\n")
         try:
             match player_command[0]:
                 case "look":
-                    print(ACTIONS["look"])
+                    print(text.ACTIONS["look"])
                     if STATE["lying"]:
                         print("You are lying on the floor")
-                        print(LOCATIONS["floor"])
+                        print(text.LOCATIONS["floor"])
                     elif STATE["standing"]:
-                        print(LOCATIONS["room"])
+                        print(text.text.LOCATIONS["room"])
                 case "open":
                     open_and_add(player_command)
                 case "drink":
-                    print(ACTIONS["drink-milk"])
+                    print(text.ACTIONS["drink-milk"])
                 case "eat":
-                    print(ACTIONS["eat-cookies"])
+                    print(text.ACTIONS["eat-cookies"])
                 case "stand":
-                    print(ACTIONS["stand"])
+                    print(text.ACTIONS["stand"])
                     STATE["lying"] = False
                     STATE["standing"] = True
-                case "recall":
+                case "remember":
                     remember(player_command[1])
+                    continue
                 case "help":
-                    possible_actions_list = list(ACTIONS.keys())
+                    possible_actions_list = list(text.ACTIONS.keys())
                     possible_actions_list.pop()
                     print("\n")
                     for i in possible_actions_list:
@@ -292,6 +164,9 @@ while True:
                             continue
                         elif i == "eat-cookies":
                             print("eat")
+                            continue
+                        elif i == "remember":
+                            print("remember <word you don't know> (eg. remember steady)")
                             continue
                         print(i)
                     print("\n")
@@ -310,17 +185,17 @@ while True:
         santa_counter += 1
 
         if santa_state["alive"] is False:
-            print(SANTA_DEAD)
-        elif santa_counter == len(SANTA):
-            print(SANTA_KILLS)
+            print(text.SANTA_DEAD)
+        elif santa_counter == len(text.SANTA):
+            print(text.SANTA_KILLS)
             break
         else:
-            print(SANTA[santa_counter])
+            print(text.SANTA[santa_counter])
             continue
         break
-    break
-
-
-
-
+    if ask_to_play_again():
+        santa_counter = 0
+        continue
+    else:
+        break
 
