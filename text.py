@@ -68,7 +68,7 @@ BACKGROUND = [
 LOCATIONS = {
     # The locations of your head / body
     "beginning": "You hear loud footsteps above you on the second floor. You open your eyes. Your head is pounding. You realize you are lying on the floor.",
-    "brother": "You remember your brother stole his best friend's Nintendo Switch this year to play Super Mario Wonder. He must be on the naughty list. You hear loud footsteps above you.",
+    "brother": "You remember your brother stole his best friend's Nintendo Switch this year to play Super Mario Wonder. He must be on the naughty list. You hear loud footsteps above you. \n(type 'help' for all actions)",
     "floor": "You see a pool of dark liquid. The room is almost pitch black. There is some light behind you. You think the christmas tree, with all its presents, milk and cookies, is behind you.",
     "room": "The room is dark. There are carefully wrapped presents under the christmas tree. Next to the tree is a table with a glass of milk and a plate of cookies."
 }
@@ -131,6 +131,8 @@ WORD_DEFINITIONS = {
     "naughty": "(adj) not good; bad boy/girl. Santa has a Naughty and Nice list. Bad chidern go on the Naughty list and nice/kind childern go on the Nice list",
     "inflation": "(n) when the price of everything goes up because of a bad economy.",
     "burn": "(v) using heat to change something into more energy. 'A stove burns gass to make heat.'",
+    "fluffy": "(adj) feel soft because the thing or animal has lots of soft hair.",
+    "bullets": "(n) the metal things a gun shoots",
 } 
 PRESENTS = {
     "teddy_bear": "It's a teddy bear. You feel it's fluffy fur, as it stares back at you with soulless eyes",

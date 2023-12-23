@@ -7,15 +7,18 @@ A christmas text adventure game made for the English language support center.
 """
 
 
-STATE = {
+body_position_state = {
     "lying": True,
     "standing": False,
 }
 
 gun_state = {
+    "loaded": False,
     "have": False,
-    "loaded": False
 }
+
+gun_loaded = False
+have_gun = False
 
 santa_state = {
     "alive": True,
@@ -25,6 +28,13 @@ inventory = {}
 santa_counter = 0
 nervousness = 0
 
+def reset_state():
+    gun_state["have"] = False
+    gun_state["loaded"] = False
+    santa_state["alive"] = True
+    body_position_state["lying"] = True
+    body_position_state["standing"] = False
+    inventory.clear()
 
 def ask_to_play_again():
     while True:
@@ -45,8 +55,37 @@ def introduce():
     for i in text.BACKGROUND:
         print(i)
 
-def open_present():
-    pass
+
+def is_inventory_full():
+    presents_count = len(text.PRESENTS)
+    if len(inventory) == presents_count:
+        print('There are no more presents to open')
+        return True
+    else:
+        return False
+
+
+def get_valid_present():
+    inventory_full = is_inventory_full()
+    while not inventory_full:
+        random_present_name = random.choice(list(text.PRESENTS.keys()))
+        if random_present_name not in inventory.keys():
+            return random_present_name
+
+
+def open_present(open_message):
+    random_present_name = get_valid_present()
+    random_present_message = text.PRESENTS[random_present_name]
+    print("\n")
+    print(open_message)
+    print(random_present_message)
+    formated_present_name = " ".join(random_present_name.split('_'))
+    print(f"\n You put the {formated_present_name} in your inventory")
+    inventory[random_present_name] = random_present_message
+    if random_present_name == 'gun':
+        gun_state["have"] = True
+    return
+
 
 def open_and_add(command):
     # TODO: Refactor me please
@@ -60,42 +99,7 @@ def open_and_add(command):
         print("------------------")
         print("\n")
     elif item == "present":
-        random_present_name = random.choice(list(text.PRESENTS.keys()))
-        random_present_message = text.PRESENTS[random_present_name]
-        print("\n")
-        print(open_message)
-        print(random_present_message)
-        match random_present_name:
-            case "teddy_bear":
-                print("\nYou put the teddy bear in your inventory.\n")
-                inventory[random_present_name] = random_present_message
-                del text.PRESENTS[random_present_name]
-                return
-            case "hair_dryer":
-                print("\nYou put the hair dryer in your inventory.\n")
-                inventory[random_present_name] = random_present_message
-                del text.PRESENTS[random_present_name]
-                return
-            case "dog_toy":
-                print("\nYou put the dog toy in your inventory.\n")
-                inventory[random_present_name] = random_present_message
-                del text.PRESENTS[random_present_name]
-                return
-            case "coffee_maker":
-                print("\nYou put the coffee maker in your inventory.\n")
-                inventory[random_present_name] = random_present_message
-                del text.PRESENTS[random_present_name]
-                return
-            case "gun":
-                print(f"\nYou put the {random_present_name} in your inventory.\n")
-                inventory[random_present_name] = random_present_message
-                gun_state["have"] = True
-                del text.PRESENTS[random_present_name]
-                return
-
-        print(f"\nYou put the {random_present_name} in your inventory.\n")
-        inventory[random_present_name] = random_present_message
-        del text.PRESENTS[random_present_name]
+        open_present(open_message)
         
 
 def load_gun():
@@ -132,11 +136,11 @@ while True:
             match player_command[0]:
                 case "look":
                     print(text.ACTIONS["look"])
-                    if STATE["lying"]:
+                    if body_position_state["lying"]:
                         print("You are lying on the floor")
                         print(text.LOCATIONS["floor"])
-                    elif STATE["standing"]:
-                        print(text.text.LOCATIONS["room"])
+                    elif body_position_state["standing"]:
+                        print(text.LOCATIONS["room"])
                 case "open":
                     open_and_add(player_command)
                 case "drink":
@@ -145,8 +149,8 @@ while True:
                     print(text.ACTIONS["eat-cookies"])
                 case "stand":
                     print(text.ACTIONS["stand"])
-                    STATE["lying"] = False
-                    STATE["standing"] = True
+                    body_position_state["lying"] = False
+                    body_position_state["standing"] = True
                 case "remember":
                     remember(player_command[1])
                     continue
@@ -170,6 +174,7 @@ while True:
                             continue
                         print(i)
                     print("\n")
+                    print("What will you do next? \n")
                     continue
                 case "load":
                     load_gun()
@@ -180,9 +185,10 @@ while True:
                     print("You do nothing.")
         except:
             print("You do nothing")
-            print("(Type 'help' for commands.)")
+            print("(Type 'help' for actions.)")
 
         santa_counter += 1
+        print("What will you do next?")
 
         if santa_state["alive"] is False:
             print(text.SANTA_DEAD)
@@ -195,6 +201,7 @@ while True:
         break
     if ask_to_play_again():
         santa_counter = 0
+        reset_state()
         continue
     else:
         break
