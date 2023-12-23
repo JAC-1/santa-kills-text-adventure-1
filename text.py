@@ -134,6 +134,7 @@ WORD_DEFINITIONS = {
     "fluffy": "(adj) feel soft because the thing or animal has lots of soft hair.",
     "bullets": "(n) the metal things a gun shoots",
 } 
+
 PRESENTS = {
     "teddy_bear": "It's a teddy bear. You feel it's fluffy fur, as it stares back at you with soulless eyes",
     "hair_dryer": "It's a hairdryer. It's pink and wireless. Amazing technology, but not very useful right now.",

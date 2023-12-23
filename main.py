@@ -17,8 +17,6 @@ gun_state = {
     "have": False,
 }
 
-gun_loaded = False
-have_gun = False
 
 santa_state = {
     "alive": True,
